@@ -1,5 +1,18 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
-const API_ORIGIN = API_URL ? new URL(API_URL).origin : "";
+// Accepts values pasted into hosting dashboards without a scheme, with quotes or a trailing slash.
+function normalizeApiUrl(raw) {
+  let url = (raw || "").trim().replace(/^["']|["']$/g, "").replace(/\/+$/, "");
+  if (/^[a-z0-9-]+(\.[a-z0-9-]+)*(:\d+)?(\/|$)/i.test(url)) {
+    url = `${/^(localhost|127\.0\.0\.1)(:|\/|$)/.test(url) ? "http" : "https"}://${url}`;
+  }
+  try {
+    return { url, origin: new URL(url).origin };
+  } catch {
+    console.warn(`NEXT_PUBLIC_API_URL is missing or invalid ("${raw ?? ""}"). Expected e.g. https://api.example.com/api`);
+    return { url: "", origin: "" };
+  }
+}
+
+const { url: API_URL, origin: API_ORIGIN } = normalizeApiUrl(process.env.NEXT_PUBLIC_API_URL);
 
 export const assetUrl = (path) => (!path || /^https?:\/\//.test(path) ? path : `${API_ORIGIN}${path}`);
 
