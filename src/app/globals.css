@@ -1,59 +1,158 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-50: #f2f8f6;
-  --color-brand-100: #dcefeb;
-  --color-brand-200: #b9ded7;
-  --color-brand-600: #157a6e;
-  --color-brand-700: #10655b;
-  --color-brand-900: #0f2f2c;
-  --color-ink: #12302d;
-  --color-muted: #4f625f;
+  /* Clinical teal: one brand hue, used for actions and key accents only */
+  --color-brand-50: #eef6f4;
+  --color-brand-100: #d6ebe6;
+  --color-brand-200: #acd6cd;
+  --color-brand-500: #13867a;
+  --color-brand-600: #0e6f65;
+  --color-brand-700: #0b5a52;
+  --color-brand-800: #0a4842;
+  --color-brand-900: #0a3431;
+  --color-brand-950: #072523;
+  /* Bright mint for highlights on dark brand surfaces only */
+  --color-mint: #7ee2c6;
 
-  --font-sans: var(--font-inter);
-  --font-display: var(--font-space-grotesk);
+  /* Neutrals, tinted very slightly toward the brand hue */
+  --color-ink: #11262a;
+  --color-ink-soft: #2b3f43;
+  --color-muted: #566a6d;
+  --color-line: #e1e7e6;
+  --color-line-strong: #c9d3d1;
+  --color-canvas: #f6f8f7;
+  --color-sand: #f6f2ec;
+
+  --color-danger: #b42318;
+  --color-danger-bg: #fef3f2;
+  --color-warn-bg: #fff8eb;
+  --color-warn-line: #f3d9a4;
+  --color-warn-ink: #6b4a0c;
+
+  --font-sans: var(--font-public-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-source-serif), ui-serif, Georgia, serif;
+
+  --shadow-soft: 0 1px 2px rgb(17 38 42 / 0.04), 0 4px 12px -2px rgb(17 38 42 / 0.06);
+  --shadow-lift: 0 2px 4px rgb(17 38 42 / 0.04), 0 16px 32px -12px rgb(17 38 42 / 0.16);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @layer base {
   html {
     scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    scrollbar-color: var(--color-line-strong) transparent;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 
   body {
     @apply bg-white font-sans text-ink antialiased;
+    font-size: 1rem;
+    line-height: 1.6;
+    caret-color: var(--color-brand-600);
+  }
+
+  ::selection {
+    background: var(--color-brand-100);
+    color: var(--color-brand-900);
   }
 
   h1,
   h2,
   h3 {
-    @apply font-display;
+    @apply font-display text-ink;
+    text-wrap: balance;
+    letter-spacing: -0.015em;
+    line-height: 1.15;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  a {
+    text-underline-offset: 0.2em;
+    text-decoration-thickness: 1px;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brand-600);
+    outline-offset: 2px;
+    border-radius: 4px;
   }
 }
 
 @utility container-page {
-  @apply mx-auto w-full max-w-6xl px-5 sm:px-8;
+  @apply mx-auto w-full max-w-[76rem] px-4 sm:px-6 lg:px-8;
+}
+
+@utility section {
+  @apply py-16 sm:py-20 lg:py-24;
 }
 
 @utility btn {
-  @apply inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 disabled:cursor-not-allowed disabled:opacity-60;
+  @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-[10px] px-5 text-[0.9375rem] font-semibold whitespace-nowrap transition-[background-color,border-color,color,box-shadow] duration-200 disabled:cursor-not-allowed disabled:opacity-60;
 }
 
 @utility btn-primary {
-  @apply btn bg-brand-600 text-white hover:bg-brand-700;
+  @apply btn bg-brand-600 text-white shadow-[0_1px_2px_rgb(10_52_49/0.2)] hover:bg-brand-700 active:bg-brand-800;
 }
 
-@utility btn-outline {
-  @apply btn border border-ink bg-white text-ink hover:bg-brand-50;
+@utility btn-secondary {
+  @apply btn border border-line-strong bg-white text-ink hover:border-ink-soft hover:bg-canvas;
+}
+
+@utility btn-light {
+  @apply btn bg-white text-brand-900 hover:bg-brand-50;
+}
+
+@utility btn-ghost-light {
+  @apply btn border border-white/30 text-white hover:border-white/60 hover:bg-white/10;
+}
+
+@utility link-arrow {
+  @apply inline-flex items-center gap-1.5 font-semibold text-brand-700 underline-offset-4 hover:underline;
 }
 
 @utility field-label {
-  @apply mb-1.5 block text-xs font-semibold text-ink;
+  @apply mb-1.5 block text-sm font-semibold text-ink-soft;
 }
 
 @utility field-input {
-  @apply w-full rounded-lg border border-brand-600/60 bg-white px-3 py-2.5 text-sm text-ink outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-600/20;
+  /* 16px text keeps iOS from zooming into fields */
+  @apply block h-12 w-full appearance-none rounded-[10px] border border-line-strong bg-white px-3.5 text-base text-ink transition-[border-color,box-shadow] duration-150 outline-none placeholder:text-muted/80 hover:border-muted focus:border-brand-600 focus:ring-4 focus:ring-brand-600/15;
 }
 
-@utility card {
-  @apply rounded-2xl border border-brand-100 bg-white;
+@utility field-error {
+  @apply mt-1.5 flex items-start gap-1.5 text-sm text-danger;
+}
+
+@utility panel {
+  @apply rounded-2xl border border-line bg-white;
+}
+
+/* Native select gets a drawn chevron so it matches the inputs */
+select.field-input {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23566a6d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.85rem center;
+  background-size: 1.1rem;
+  padding-right: 2.5rem;
+}
+
+input[type="date"].field-input::-webkit-calendar-picker-indicator {
+  opacity: 0.55;
+  cursor: pointer;
 }

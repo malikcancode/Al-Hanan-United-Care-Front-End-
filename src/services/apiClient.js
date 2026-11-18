@@ -1,4 +1,7 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_ORIGIN = API_URL ? new URL(API_URL).origin : "";
+
+export const assetUrl = (path) => (!path || /^https?:\/\//.test(path) ? path : `${API_ORIGIN}${path}`);
 
 export class ApiError extends Error {
   constructor(message, status, errors) {
