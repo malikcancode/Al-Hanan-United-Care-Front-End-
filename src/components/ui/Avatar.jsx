@@ -8,16 +8,25 @@ const initials = (name = "") =>
     .map((w) => w[0].toUpperCase())
     .join("");
 
-// Portrait photo, or an initials tile when no photo has been uploaded.
-export default function Avatar({ src, alt = "", className = "aspect-[4/5] w-full rounded-xl" }) {
+// Circular photo, or a quiet initials mark when no photo has been uploaded.
+export default function Avatar({ src, alt = "", className = "h-24 w-24 sm:h-28 sm:w-28" }) {
+  const base = `${className} shrink-0 overflow-hidden rounded-full`;
+
   if (src) {
     // eslint-disable-next-line @next/next/no-img-element
-    return <img src={src} alt={alt} loading="lazy" className={`${className} bg-canvas object-cover`} />;
+    return (
+      <img
+        src={src}
+        alt={alt}
+        loading="lazy"
+        className={`${base} bg-canvas object-cover ring-1 ring-line`}
+      />
+    );
   }
 
   return (
     <span
-      className={`${className} flex items-center justify-center bg-brand-50 font-display text-4xl font-semibold text-brand-700/70`}
+      className={`${base} flex items-center justify-center bg-canvas font-sans text-sm font-medium tracking-wide text-muted ring-1 ring-line`}
       aria-hidden="true"
     >
       {initials(alt) || "Dr"}

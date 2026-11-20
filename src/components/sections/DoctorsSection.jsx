@@ -41,7 +41,7 @@ export default function DoctorsSection({ doctors, showHeading = true, limit }) {
             }`}
           >
             {list.map((doctor) => (
-              <li key={doctor._id}>
+              <li key={doctor._id} className="flex flex-col items-center text-center">
                 <Avatar src={assetUrl(doctor.photoUrl)} alt={doctor.name} />
                 <h3 className="mt-4 font-sans text-base font-semibold tracking-normal sm:text-lg">{doctor.name}</h3>
                 {doctor.specialty && <p className="mt-0.5 text-[0.9375rem] font-medium text-brand-700">{doctor.specialty}</p>}
